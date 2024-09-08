@@ -13,7 +13,7 @@ import { a } from '@react-spring/three'
 import islandScene from '@/assets/3d/island.glb'
 
 export default function Island(props: Record<string, number[]>) {
-    const islandRef = useRef<Group<Object3DEventMap>>(null)
+    const islandRef = useRef(null)
   const { nodes, materials } = useGLTF(islandScene)
   return (
     <a.group ref={islandRef} {...props}>
