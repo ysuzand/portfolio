@@ -6,15 +6,90 @@ Source: https://sketchfab.com/3d-models/foxs-islands-163b68e09fcc47618450150be77
 Title: Fox's islands
 */
 import type { Group, Object3DEventMap } from 'three'
-import { useRef, useEffect } from 'react'
-import { useGLTF } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
-import { a } from '@react-spring/three'
-import islandScene from '@/assets/3d/island.glb'
+import { useRef, useEffect } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { useFrame, useThree } from '@react-three/fiber';
+import { a } from '@react-spring/three';
+import islandScene from '@/assets/3d/island.glb';
 
-export default function Island(props: Record<string, number[]>) {
-    const islandRef = useRef(null)
-  const { nodes, materials } = useGLTF(islandScene)
+type IslandProps = {
+  isRotating: boolean;
+  setIsRotating: (rotate: boolean) => void;
+} &  Record<string, any>;
+
+export default function Island({
+  isRotating,
+  setIsRotating,
+  ...props
+}:IslandProps) {
+  const islandRef = useRef<Group<Object3DEventMap>>(null);
+  const {gl, viewport} = useThree();
+  const { nodes, materials } = useGLTF(islandScene);
+  const lastX = useRef(0);
+  const rotationSpeed = useRef(0);
+  const dampingFactor = 0.95;
+
+  const handlePointerDown = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsRotating(true);
+
+    // Calculate the clientX based on whether it's a touch event or a mouse event
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+    // Store the current clientX position for reference
+    lastX.current = clientX;
+  };
+
+  const handlePointerUp = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsRotating(false);
+  };
+
+  const handlePointerMove = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (isRotating) {
+      // If rotation is enabled, calculate the change in clientX position
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+      // calculate the change in the horizontal position of the mouse cursor or touch input,
+      // relative to the viewport's width
+      const delta = (clientX - lastX.current) / viewport.width;
+
+      if (islandRef?.current) {
+        // Update the island's rotation based on the mouse/touch movement
+        islandRef.current.rotation.y += delta * 0.01 * Math.PI;
+      }
+      
+      // Update the reference for the last clientX position
+      lastX.current = clientX;
+
+      // Update the rotation speed
+      rotationSpeed.current = delta * 0.01 * Math.PI;
+    }
+  };
+
+  useFrame(() => {
+    if (islandRef?.current) {
+        islandRef.current.rotation.y += 0.003
+    }
+  })
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("pointermove", handlePointerMove);
+
+    return () => {
+        canvas.removeEventListener("pointerdown", handlePointerDown);
+        canvas.removeEventListener("pointerup", handlePointerUp);
+        canvas.removeEventListener("pointermove", handlePointerMove);
+    }
+  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove])
+
   return (
     <a.group ref={islandRef} {...props}>
       <mesh

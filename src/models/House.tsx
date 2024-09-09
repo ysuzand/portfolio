@@ -5,21 +5,25 @@ License: CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
 Source: https://sketchfab.com/3d-models/forest-house-52429e4ef7bf4deda1309364a2cda86f
 Title: Forest House
 */
-
+import type { Group, Object3DEventMap } from 'three'
 import { useRef, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import { a } from '@react-spring/three'
 import houseScene from '@/assets/3d/forest_house.glb'
 
+type HouseProps = {
+    isRotating: boolean;
+    setIsRotating: (rotate: boolean) => void;
+  } &  Record<string, any>;
 
-export default function House({isRotating, setIsRotating, ...props}) {
-    const houseRef = useRef();
+export default function House({isRotating, setIsRotating, ...props}: HouseProps) {
+    const houseRef = useRef<Group<Object3DEventMap>>(null);
     const {gl, viewport} = useThree();
-  const { nodes, materials } = useGLTF(houseScene);
-  const lastX = useRef(0);
-  const rotationSpeed = useRef(0);
-  const dampingFactor = 0.95;
+    const { nodes, materials } = useGLTF(houseScene);
+    const lastX = useRef(0);
+    const rotationSpeed = useRef(0);
+    const dampingFactor = 0.95;
 
   const handlePointerDown = (e) => {
     e.stopPropagation();
@@ -50,8 +54,10 @@ export default function House({isRotating, setIsRotating, ...props}) {
       // relative to the viewport's width
       const delta = (clientX - lastX.current) / viewport.width;
 
-      // Update the island's rotation based on the mouse/touch movement
-      houseRef.current.rotation.y += delta * 0.01 * Math.PI;
+      if (houseRef?.current) {
+        // Update the island's rotation based on the mouse/touch movement
+        houseRef.current.rotation.y += delta * 0.01 * Math.PI;
+      }
 
       // Update the reference for the last clientX position
       lastX.current = clientX;
@@ -63,8 +69,8 @@ export default function House({isRotating, setIsRotating, ...props}) {
 
 
   useFrame(() => {
-    if (houseRef) {
-        // houseRef?.current?.rotation.y += 0.01
+    if (houseRef?.current) {
+        houseRef.current.rotation.y += 0.008
     }
   })
 
@@ -83,431 +89,266 @@ export default function House({isRotating, setIsRotating, ...props}) {
 
   return (
     <a.group ref={houseRef} {...props} >
-      {/* <a.group rotation={[-Math.PI / 2, 0, 0]} scale={0}> */}
-        {/* <a.group rotation={[Math.PI / 2, 0, 0]}> */}
           <mesh
             geometry={nodes.Windows001_Window_0.geometry}
             material={materials.Window}
-            position={[-29.4, 190.5, -176.1]}
+            position={[170.6, 190.5, -176.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Windows_Window_0.geometry}
             material={materials.Window}
-            position={[-163.4, 264.3, -120.5]}
+            position={[36.6, 264.3, -120.5]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Windows002_Window_0.geometry}
             material={materials.Window}
-            position={[-32.4, 214.1, 45.7]}
+            position={[167.6, 214.1, 45.7]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.SideRoofBase_RoofMoss_0.geometry}
             material={materials.RoofMoss}
-            position={[-94.2, 237.1, -218.1]}
+            position={[105.8, 237.1, -218.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.RoofMoss_RoofMoss_0.geometry}
             material={materials.RoofMoss}
-            position={[-84.6, 400.3, -46.9]}
+            position={[115.4, 400.3, -46.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
-          {/* OK*/}
-          {/* <mesh
-            geometry={nodes.Roof009_RoofMoss_0.geometry}
-            material={materials.RoofMoss}
-            position={[-94.7, 404.7, -53.1]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.RoofBase001_RoofMoss_0.geometry}
-            material={materials.RoofMoss}
-            position={[-79.6, 389.7, -64.3]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
           <mesh
             geometry={nodes.HouseFence_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
-            position={[-242.3, 149.2, -75]}
+            position={[-42.3, 149.2, -75]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
+          {/**hashigo */}
           <mesh
             geometry={nodes.Stairs_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
-            position={[-287.1, 99.6, -139.1]}
+            position={[-87.1, 99.6, -139.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.HouseSupportBeams_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
-            position={[-199.3, 115, -78.8]}
+            position={[0.7, 115, -78.8]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.HouseWoodFloor_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
-            position={[-144.6, 131.3, -86.3]}
+            position={[55.4, 131.3, -86.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Chimney_RoofMoss_0.geometry}
             material={materials.RoofMoss}
-            position={[-9, 511.9, 16.8]}
+            position={[191, 511.9, 16.8]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
-          {/* <mesh
-            geometry={nodes.Moss_WoodPlanks_0.geometry}
-            material={materials.WoodPlanks}
-            position={[-201.2, 158.9, -135.5]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
           <mesh
             geometry={nodes.DoorRoof_RoofMoss_0.geometry}
             material={materials.RoofMoss}
-            position={[-201.5, 278.9, -23.1]}
+            position={[-1.5, 278.9, -23.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.House_House_0.geometry}
             material={materials.House}
-            position={[-124, 269.2, -49.3]}
+            position={[76, 269.2, -49.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
-          {/* <mesh
-            geometry={nodes.TallGrass_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-235.5, 129.6, -16.8]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
           <mesh
             geometry={nodes.Vines001_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[-262.5, 118.9, -198.8]}
+            position={[-62.5, 118.9, -198.8]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Vines002_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[-221.3, 257.5, -17.5]}
+            position={[-21.3, 257.5, -17.5]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Vines003_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[-75.1, 260.8, 69.6]}
+            position={[124.9, 260.8, 69.6]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Vines004_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[35.9, 470.1, -54.3]}
+            position={[235.9, 470.1, -54.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Vines005_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[34.4, 290.9, -120.1]}
+            position={[234.4, 290.9, -120.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Vines_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
-            position={[-74.5, 241.8, -224.9]}
+            position={[125.5, 241.8, -224.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.SupportBeams_Window_0.geometry}
             material={materials.Window}
-            position={[-77.1, 201.4, -235.7]}
+            position={[122.9, 201.4, -235.7]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.FenceRight_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-353.6, 93.4, 93.9]}
+            position={[-153.6, 93.4, 93.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.FenceRight015_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-383.3, 94.9, -275.5]}
+            position={[-183.3, 94.9, -275.5]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.FenceLeft_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-389.2, 98.8, -265]}
+            position={[-189.2, 98.8, -265]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.FenceRight003_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-349.7, 89.4, 101.4]}
+            position={[-149.7, 89.4, 101.4]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.SmallRocks_BigRock_0.geometry}
             material={materials.BigRock}
-            position={[4, 131.4, -227.8]}
+            position={[204, 131.4, -227.8]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Rocks_BigRock_0.geometry}
             material={materials.BigRock}
-            position={[19.8, 143.8, -172.9]}
+            position={[240.6, 143.8, -172.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.BTree001_BrichTree_0.geometry}
             material={materials.BrichTree}
-            position={[-206.6, 534.7, -287.1]}
+            position={[-6.6, 534.7, -287.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.BTree_BrichTree_0.geometry}
             material={materials.BrichTree}
-            position={[-248.6, 380.9, 155.4]}
+            position={[-48.6, 380.9, 155.4]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.BTree002_BrichTree_0.geometry}
             material={materials.BrichTree}
-            position={[-289.4, 414.5, -310.2]}
+            position={[-89.4, 414.5, -310.2]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Redwood_BrichTree_0.geometry}
             material={materials.BrichTree}
-            position={[-78.7, 344.7, -68.3]}
+            position={[121.3, 344.7, -68.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.RedwoodAlpha_TreeLeafs_0.geometry}
             material={materials.TreeLeafs}
-            position={[-90.1, 598.7, -98.6]}
+            position={[109.9, 598.7, -98.6]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.RedwoodChopped_BrichTree_0.geometry}
             material={materials.BrichTree}
-            position={[-189.7, 107.2, 84.9]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.RedwoodMoss_BrichTree_0.geometry}
-            material={materials.BrichTree}
-            position={[-326, 85, -65]}
+            position={[10.3, 107.2, 84.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Stump001_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-381.1, 93.1, -193.9]}
+            position={[-181.1, 93.1, -193.9]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Stump002_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-563.3, 84, -253.3]}
+            position={[-363.3, 84, -253.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Stump003_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-565.8, 84.1, -61.3]}
+            position={[-365.8, 84.1, -61.3]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Stump_WoodFence_0.geometry}
             material={materials.WoodFence}
-            position={[-575.7, 89.2, -23.8]}
+            position={[-355, 89.2, -23.8]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
           <mesh
             geometry={nodes.Ground_Ground_0.geometry}
             material={materials.Ground}
-            position={[-235.2, 93.3, -97.7]}
+            position={[-14.4, 93.3, -97.7]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
-          <mesh
-            geometry={nodes.GrassOrange_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-124.5, 299.7, -165.9]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.GrassRoof_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-100.4, 330.2, -133.4]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.GrassGround_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-245, 103.4, -133.9]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.GrassRoof001_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-76.7, 524.2, -58.9]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane001_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-248.7, 102.9, -291.7]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane002_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-258.5, 103.1, -284]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane005_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-249, 83.6, 147.9]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane006_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-235.2, 81.4, 143]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane007_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-100, 337.5, -177.4]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane008_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-588, 76.9, -128]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          <mesh
-            geometry={nodes.Plane009_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-484.2, 62.5, -122]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          />
-          {/* <mesh
-            geometry={nodes.Plane010_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-477.8, 66.7, -109.1]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.Racoon_Animals_0.geometry}
-            material={materials.Animals}
-            position={[-289, 129.3, -295.2]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.Bird_Animals_0.geometry}
-            material={materials.Animals}
-            position={[-288.4, 253, -280.9]}
-            rotation={[-1.6, 0, 0.1]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.Bird001_Animals_0.geometry}
-            material={materials.Animals}
-            position={[-528.9, 813.8, -51.4]}
-            rotation={[-1.5, 0, -0.2]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.Bird002_Animals_0.geometry}
-            material={materials.Animals}
-            position={[-349.9, 975.4, -386.8]}
-            rotation={[-1.6, 0, 0.5]}
-            scale={100}
-          /> */}
           <mesh
             geometry={nodes.GroundPlane_Plane_0.geometry}
             material={materials.Plane}
-            position={[-220.8, 59.3, -82.1]}
+            position={[0, 59.3, -82.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
           />
-          {/* <mesh
-            geometry={nodes.Powerlines_WoodFence_0.geometry}
-            material={materials.WoodFence}
-            position={[-442.5, 851.4, -74.8]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
-          {/* <mesh
-            geometry={nodes.Powerlines001_GrassALPHA_0.geometry}
-            material={materials.GrassALPHA}
-            position={[-443.4, 870, -75.1]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            scale={100}
-          /> */}
-        {/* </a.group> */}
-      {/* </a.group> */}
     </a.group>
   )
 }

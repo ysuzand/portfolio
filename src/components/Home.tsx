@@ -11,8 +11,8 @@ const Home = () => {
     const [isRotating, setIsRotating] = useState(false)
     const adjustIslandForScreenSize = useMemo(() => {
         let screenScale = [1, 1, 1]
-        const screenPosition = [0, -6.5, -43]
-        const rotation = [0.1, 3.8, 0]
+        const screenPosition = [0.1, 0, -50]
+        const rotation = [0.3, 4.7, 0]
 
         if (typeof window === 'object') {
             
@@ -36,18 +36,21 @@ const Home = () => {
 
                 <Sky />
 
-                <Bird />
+                {/* <Bird /> */}
                 <House
-                position={[-1, -30,-100]}
+                position={[0,-30,-120]}
                 scale={0.1}
                 isRotating={isRotating}
                 setIsRotating={setIsRotating}
+                rotation={[0.2, 0, 0]}
                 />
                 
                 {/* <Island
                     position={adjustIslandForScreenSize.screenPosition}
                     scale={adjustIslandForScreenSize.screenScale}
                     rotation={adjustIslandForScreenSize.rotation}
+                    isRotating={isRotating}
+                    setIsRotating={setIsRotating}
                 /> */}
             </Suspense>
         </Canvas>
