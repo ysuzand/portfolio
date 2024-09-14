@@ -5,7 +5,9 @@ License: CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
 Source: https://sketchfab.com/3d-models/forest-house-52429e4ef7bf4deda1309364a2cda86f
 Title: Forest House
 */
+import type { Dispatch, SetStateAction } from 'react'
 import type { Group, Object3DEventMap } from 'three'
+import type { StageContentIndexType } from '@/components/Info'
 import { useRef, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
@@ -15,15 +17,15 @@ import houseScene from '@/assets/3d/forest_house.glb'
 type HouseProps = {
     isRotating: boolean;
     setIsRotating: (rotate: boolean) => void;
+    setCurrentStage: Dispatch<SetStateAction<StageContentIndexType>>;
   } &  Record<string, any>;
 
-export default function House({isRotating, setIsRotating, ...props}: HouseProps) {
+export default function House({isRotating, setIsRotating, setCurrentStage, ...props}: HouseProps) {
     const houseRef = useRef<Group<Object3DEventMap>>(null);
     const {gl, viewport} = useThree();
     const { nodes, materials } = useGLTF(houseScene);
     const lastX = useRef(0);
     const rotationSpeed = useRef(0);
-    const dampingFactor = 0.95;
 
   const handlePointerDown = (e) => {
     e.stopPropagation();
@@ -67,10 +69,49 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
     }
   };
 
+  const handleKeyDown = (e) => {
+    let rotation = houseRef?.current?.rotation.y ?? 0;
+
+    if (e.key === "ArrowLeft") {
+      if (!isRotating) setIsRotating(true);
+      
+      rotation += 0.005 * Math.PI;
+      rotationSpeed.current = 0.007;
+    } else if (e.key === "ArrowRight") {
+      if (!isRotating) setIsRotating(true);
+
+      rotation -= 0.005 * Math.PI;
+      rotationSpeed.current = -0.007;
+    }
+  };
+
+  // Handle keyup events
+  const handleKeyUp = (e) => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      setIsRotating(false);
+    }
+  };
 
   useFrame(() => {
     if (houseRef?.current) {
-        houseRef.current.rotation.y += 0.008
+      // houseRef.current.rotation.y += 0.002
+    }
+
+    const rotation = houseRef?.current?.rotation.y ?? 0;
+
+    const normalizedRotation =
+      ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+    // Set the current stage based on the house's orientation
+    switch (true) {
+      case normalizedRotation > 4 && normalizedRotation <= 6:
+        setCurrentStage(3);
+        break;
+      case normalizedRotation > 2 && normalizedRotation <= 4:
+        setCurrentStage(2);
+        break;
+      default:
+        setCurrentStage(1);
     }
   })
 
@@ -80,16 +121,23 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
     canvas.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointermove", handlePointerMove);
 
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
     return () => {
-        canvas.removeEventListener("pointerdown", handlePointerDown);
-        canvas.removeEventListener("pointerup", handlePointerUp);
-        canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     }
   }, [gl, handlePointerDown, handlePointerUp, handlePointerMove])
 
   return (
     <a.group ref={houseRef} {...props} >
           <mesh
+            // @ts-ignore: Object3D<Object3DEventMap> does not cover geometry
             geometry={nodes.Windows001_Window_0.geometry}
             material={materials.Window}
             position={[170.6, 190.5, -176.1]}
@@ -97,6 +145,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Windows_Window_0.geometry}
             material={materials.Window}
             position={[36.6, 264.3, -120.5]}
@@ -104,6 +153,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Windows002_Window_0.geometry}
             material={materials.Window}
             position={[167.6, 214.1, 45.7]}
@@ -111,6 +161,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.SideRoofBase_RoofMoss_0.geometry}
             material={materials.RoofMoss}
             position={[105.8, 237.1, -218.1]}
@@ -118,6 +169,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.RoofMoss_RoofMoss_0.geometry}
             material={materials.RoofMoss}
             position={[115.4, 400.3, -46.9]}
@@ -125,6 +177,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.HouseFence_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
             position={[-42.3, 149.2, -75]}
@@ -133,6 +186,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
           />
           {/**hashigo */}
           <mesh
+            // @ts-ignore
             geometry={nodes.Stairs_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
             position={[-87.1, 99.6, -139.1]}
@@ -140,6 +194,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.HouseSupportBeams_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
             position={[0.7, 115, -78.8]}
@@ -147,6 +202,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.HouseWoodFloor_WoodPlanks_0.geometry}
             material={materials.WoodPlanks}
             position={[55.4, 131.3, -86.3]}
@@ -154,6 +210,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Chimney_RoofMoss_0.geometry}
             material={materials.RoofMoss}
             position={[191, 511.9, 16.8]}
@@ -161,6 +218,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.DoorRoof_RoofMoss_0.geometry}
             material={materials.RoofMoss}
             position={[-1.5, 278.9, -23.1]}
@@ -168,6 +226,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.House_House_0.geometry}
             material={materials.House}
             position={[76, 269.2, -49.3]}
@@ -175,6 +234,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines001_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[-62.5, 118.9, -198.8]}
@@ -182,6 +242,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines002_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[-21.3, 257.5, -17.5]}
@@ -189,6 +250,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines003_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[124.9, 260.8, 69.6]}
@@ -196,6 +258,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines004_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[235.9, 470.1, -54.3]}
@@ -203,6 +266,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines005_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[234.4, 290.9, -120.1]}
@@ -210,6 +274,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Vines_GrassALPHA_0.geometry}
             material={materials.GrassALPHA}
             position={[125.5, 241.8, -224.9]}
@@ -217,6 +282,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.SupportBeams_Window_0.geometry}
             material={materials.Window}
             position={[122.9, 201.4, -235.7]}
@@ -224,6 +290,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.FenceRight_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-153.6, 93.4, 93.9]}
@@ -231,6 +298,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.FenceRight015_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-183.3, 94.9, -275.5]}
@@ -238,6 +306,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.FenceLeft_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-189.2, 98.8, -265]}
@@ -245,6 +314,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.FenceRight003_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-149.7, 89.4, 101.4]}
@@ -252,6 +322,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.SmallRocks_BigRock_0.geometry}
             material={materials.BigRock}
             position={[204, 131.4, -227.8]}
@@ -259,6 +330,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Rocks_BigRock_0.geometry}
             material={materials.BigRock}
             position={[240.6, 143.8, -172.9]}
@@ -266,6 +338,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.BTree001_BrichTree_0.geometry}
             material={materials.BrichTree}
             position={[-6.6, 534.7, -287.1]}
@@ -273,6 +346,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.BTree_BrichTree_0.geometry}
             material={materials.BrichTree}
             position={[-48.6, 380.9, 155.4]}
@@ -280,6 +354,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.BTree002_BrichTree_0.geometry}
             material={materials.BrichTree}
             position={[-89.4, 414.5, -310.2]}
@@ -287,6 +362,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Redwood_BrichTree_0.geometry}
             material={materials.BrichTree}
             position={[121.3, 344.7, -68.3]}
@@ -294,6 +370,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.RedwoodAlpha_TreeLeafs_0.geometry}
             material={materials.TreeLeafs}
             position={[109.9, 598.7, -98.6]}
@@ -301,6 +378,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.RedwoodChopped_BrichTree_0.geometry}
             material={materials.BrichTree}
             position={[10.3, 107.2, 84.9]}
@@ -308,6 +386,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Stump001_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-181.1, 93.1, -193.9]}
@@ -315,6 +394,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Stump002_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-363.3, 84, -253.3]}
@@ -322,6 +402,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Stump003_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-365.8, 84.1, -61.3]}
@@ -329,6 +410,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Stump_WoodFence_0.geometry}
             material={materials.WoodFence}
             position={[-355, 89.2, -23.8]}
@@ -336,6 +418,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.Ground_Ground_0.geometry}
             material={materials.Ground}
             position={[-14.4, 93.3, -97.7]}
@@ -343,6 +426,7 @@ export default function House({isRotating, setIsRotating, ...props}: HouseProps)
             scale={100}
           />
           <mesh
+            // @ts-ignore
             geometry={nodes.GroundPlane_Plane_0.geometry}
             material={materials.Plane}
             position={[0, 59.3, -82.1]}

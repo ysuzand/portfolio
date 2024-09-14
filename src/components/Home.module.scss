@@ -3,3 +3,20 @@
     height: 100vh;
     background: transparent;
 }
+
+.wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.element {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    color: darkblue;
+    bottom: 1rem;
+    
+    z-index: 5;
+}
