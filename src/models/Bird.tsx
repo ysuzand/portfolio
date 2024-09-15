@@ -3,9 +3,9 @@ import { useGLTF } from '@react-three/drei'
 import { a } from '@react-spring/three'
 import birdScene from '@/assets/3d/lowpoly_origami_bird.glb'
 import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, type Vector3 } from '@react-three/fiber'
 
-const Bird = () => {
+const Bird = ({position}: {position: Vector3}) => {
     const { nodes, materials} = useGLTF(birdScene)
     const birdRef = useRef<Group<Object3DEventMap>>(null);
 
@@ -17,7 +17,7 @@ const Bird = () => {
 
     return (
         <>
-         <a.group ref={birdRef} position={[-1, -2.4, 1]} rotation={[-2,0,-0.5]} scale={0.15}>
+         <a.group ref={birdRef} position={position} rotation={[-2,0,-0.5]} scale={0.15}>
             <mesh
                 // @ts-ignore
                 geometry={nodes.Cube001_Blue_0.geometry}

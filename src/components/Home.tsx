@@ -1,29 +1,28 @@
 import type { StageContentIndexType } from "./Info";
 import { Canvas } from "@react-three/fiber";
+import { ScrollControls, Scroll } from "@react-three/drei";
 import { Suspense, useMemo, useState } from "react";
 import Loader from '@/components/Loader'
-import Island from '@/models/Island'
-import st from './Home.module.scss'
 import Sky from '@/models/Sky'
 import House from '@/models/House'
-import Bird from "@/models/Bird";
 import Info from "./Info";
-import Panda from "@/models/Panda";
-import Pig from "@/models/Pig";
+import Sections from "./Sections";
+import st from './Home.module.scss'
 
 const Home = () => {
     const [currentStage, setCurrentStage] = useState<StageContentIndexType>(1);
     const [isRotating, setIsRotating] = useState(false);
 
-    const adjustIslandForScreenSize = useMemo(() => {
-        let screenScale = [1, 1, 1]
-        const screenPosition = [0.1, 0, -50]
+    const houseSize = useMemo(() => {
+        let screenScale = [0.1, 0.1, 0.1]
+        let screenPosition = [0,-30,-120]
         const rotation = [0.3, 4.7, 0]
 
         if (typeof window === 'object') {
             
             if (window.innerWidth < 768) {
-                screenScale = [0.9, 0.9, 0.9]
+                screenScale = [0.08, 0.08, 0.08]
+                screenPosition = [10, -30, -120]
             }
         }
 
@@ -43,21 +42,22 @@ const Home = () => {
                     <directionalLight position={[10, 1, 3]} intensity={1} />
                     <ambientLight intensity={1}/>
                     <hemisphereLight intensity={1}/>
-
+                    <ScrollControls pages={3} damping={1.2}>
+                    <Scroll>
                     <Sky />
-
-                    {/* <Bird /> */}
+                    
                     <House
-                    position={[0,-30,-120]}
-                    scale={0.1}
+                    position={houseSize.screenPosition}
+                    scale={houseSize.screenScale}
                     isRotating={isRotating}
                     setIsRotating={setIsRotating}
                     setCurrentStage={setCurrentStage}
-                    rotation={[0.2, 0, 0]}
+                    rotation={[0.2, 1.6, 0]}
                     />
-                    {currentStage === 1 && <Bird />}
+                    <Sections />
+                    {/* {currentStage === 1 && <Bird />}
                     {currentStage === 2 && <Panda />}
-                    {currentStage === 3 && <Pig />}
+                    {currentStage === 3 && <Pig />} */}
                     {/* <Island
                         position={adjustIslandForScreenSize.screenPosition}
                         scale={adjustIslandForScreenSize.screenScale}
@@ -65,6 +65,11 @@ const Home = () => {
                         isRotating={isRotating}
                         setIsRotating={setIsRotating}
                     /> */}
+                    </Scroll>
+                    <Scroll html>
+                        <h1>123</h1>
+                    </Scroll>
+                    </ScrollControls>
                 </Suspense>
             </Canvas>
         </section>
