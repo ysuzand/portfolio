@@ -1,5 +1,4 @@
-models: https://sketchfab.com/
-glb to react converter: https://gltf.pmnd.rs/
+WIP
 
 # React + TypeScript + Vite
 
