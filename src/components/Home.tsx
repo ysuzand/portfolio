@@ -5,6 +5,7 @@ import Loader from '@/components/Loader'
 import Ball from "@/models/Ball";
 import HomeText from "./HomeText";
 import st from './Home.module.scss'
+import Panel from "@/models/Panel";
 
 const Home = () => {
 
@@ -25,7 +26,9 @@ const Home = () => {
                     <hemisphereLight intensity={1}/>
                     <spotLight intensity={1} position={[10, 10, 0]}/>
                     <ScrollControls pages={3} damping={0.25}>
+                    <Panel />
                         <Scroll>
+                            
                             <Ball />
                         </Scroll>
                         <Scroll html>
