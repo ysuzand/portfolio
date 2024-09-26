@@ -6,7 +6,6 @@ import { useScroll } from '@react-three/drei';
 
 const Panel = () => {
     const panelRef = useRef<Mesh<BufferGeometry<NormalBufferAttributes>>>(null);
-    const positionX = useRef(-3);
     const scroll = useScroll()
 
     const config = useMemo(() => {

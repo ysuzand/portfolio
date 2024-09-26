@@ -1,11 +1,12 @@
 import { Canvas } from "@react-three/fiber";
 import { ScrollControls, Scroll } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import Loader from '@/components/Loader'
 import Ball from "@/models/Ball";
-import HomeText from "./HomeText";
-import st from './Home.module.scss'
 import Panel from "@/models/Panel";
+import HomeText from "./HomeText";
+
+import st from './Home.module.scss'
 
 const Home = () => {
 
