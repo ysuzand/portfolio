@@ -1,10 +1,10 @@
-import { Canvas } from "@react-three/fiber";
-import { ScrollControls, Scroll } from "@react-three/drei";
-import { Suspense } from "react";
+import { Canvas } from '@react-three/fiber';
+import { ScrollControls, Scroll } from '@react-three/drei';
+import { Suspense } from 'react';
 import Loader from '@/components/Loader'
-import Ball from "@/models/Ball";
-import Panel from "@/models/Panel";
-import HomeText from "./HomeText";
+import Ball from '@/models/Ball';
+import Panel from '@/models/Panel';
+import Sections from '@/components/sections/Sections';
 
 import st from './Home.module.scss'
 
@@ -33,7 +33,7 @@ const Home = () => {
                             <Ball />
                         </Scroll>
                         <Scroll html>
-                            <HomeText />
+                            <Sections />
                         </Scroll>
                     </ScrollControls>
                 </Suspense>

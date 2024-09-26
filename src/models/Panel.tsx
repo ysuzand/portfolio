@@ -37,14 +37,12 @@ const Panel = () => {
     });
     return (
         <>
-        {/* <pointLight position={[100, 10, -10]} distance={10} /> */}
         <mesh
             ref={panelRef}
             position={config.position}
             rotation={config.rotation}
             scale={config.scale}
         >
-            
             <planeGeometry args={[70, 50, 1, 1]} />
             <meshMatcapMaterial color="white" transparent />
             </mesh>
