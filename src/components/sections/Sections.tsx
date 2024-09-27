@@ -1,4 +1,4 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import SectionTop from './SectionTop';
 import SectionMiddle from './SectionMiddle';
