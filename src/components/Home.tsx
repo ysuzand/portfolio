@@ -1,15 +1,14 @@
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls, Scroll } from '@react-three/drei';
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import Loader from '@/components/Loader'
 import Ball from '@/models/Ball';
-import Panel from '@/models/Panel';
 import Sections from '@/components/sections/Sections';
-
 import st from './Home.module.scss'
 
-const Home = () => {
+const Panel = lazy(() => import('@/models/Panel'))
 
+const Home = () => {
     return (
         <section className={st.wrapper}>
             <Canvas
@@ -22,14 +21,14 @@ const Home = () => {
                         castShadow
                         position={[0, 20, -30]}
                         intensity={1}
-                        />
+                    />
                     <ambientLight visible intensity={2}/>
                     <hemisphereLight intensity={1}/>
                     <spotLight intensity={1} position={[10, 10, 0]}/>
+
                     <ScrollControls pages={3} damping={0.25}>
-                    <Panel />
-                        <Scroll>
-                            
+                        <Panel />
+                        <Scroll>      
                             <Ball />
                         </Scroll>
                         <Scroll html>
