@@ -33,8 +33,8 @@ const Ball = () => {
         const index = data.offset;
         
         if (ballRef?.current) {
-            if (prevIndex.current < index) { // down
-                console.log('scroll down')
+            if (prevIndex.current < index) {
+                // scroll down
                 if (ballRef.current.position.z > -200) {
                 ballRef.current.position.z -= 1;
                 ballRef.current.position.x += 1;
@@ -44,7 +44,7 @@ const Ball = () => {
             } 
                 
             if (prevIndex.current > index){
-                console.log('scroll up')
+                // scroll up
                 if (ballRef.current.position.z <= originalZ.current) {
                     ballRef.current.position.z += 1;
                     ballRef.current.position.x -= 1;

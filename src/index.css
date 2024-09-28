@@ -1,8 +1,8 @@
 :root {
   color-scheme: light dark;
-  color: rgba(217, 211, 202, 0.87);
+  color: black;
   background-color: #bfbfbf;
-
+  font-family: sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

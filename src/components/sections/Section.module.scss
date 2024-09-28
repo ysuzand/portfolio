@@ -1,10 +1,59 @@
-.title {
-    color: black;
+.title,
+.text,
+.transText {
     font-weight: 800;
+}
+
+.title {
     font-size: 10rem;
+    margin: 0;
+}
+
+.text {
+    font-size: 6rem;
+    margin: 0;
+}
+
+.subTitle {
+    font-size: 4rem;
     font-family: sans-serif;
+    margin: 0;
+}
+
+.sectionsContainer {
+    scroll-snap-type: y mandatory;
 }
 
 .section {
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    scroll-snap-align: center;
+    padding-left: 1rem;
+
+    &.alignMiddle {
+        justify-content: center;
+    }
+
+    &.alignTop {
+        justify-content: flex-start;
+    }
+
+    &.alignBottom {
+        justify-content: flex-end;
+    }
 }
+
+.transSection {
+    opacity: 0;
+    transition: opacity 1s ease-in;
+
+    &.visible {
+        opacity: 1;
+    }
+}
+
+.pb {
+    padding-bottom: 3rem;
+}
+

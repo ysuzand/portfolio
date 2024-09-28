@@ -9,7 +9,7 @@ const Panel = () => {
     const scroll = useScroll()
 
     const config = useMemo(() => {
-        const position: Vector3 = [-1.5, -1, 0];
+        const position: Vector3 = [-1.5, 0, 0];
         const rotation: Euler = [Math.PI / 3, 0, 0.5];
 
         return {
@@ -20,15 +20,17 @@ const Panel = () => {
     }, []);
 
     useFrame(() => {
-        const index = scroll.offset;
+        const offset = scroll.offset;
+        const index = Math.floor(offset * 10)
 
-        if (scroll.offset < 0.6) {
+        if (offset < 0.6) {
             if (index !== 0) {
-                if (panelRef?.current && panelRef.current.rotation.x > 0) {
-                    console.log(panelRef.current.rotation.x)
+                // Rotate the panel
+                if (index >= 2 && panelRef?.current && panelRef.current.rotation.x > 0) {
                     panelRef.current.rotation.x -= 0.05;
                 }
             } else {
+                // Back to initial position.
                 if (panelRef?.current && panelRef.current.rotation?.x < Math.PI / 2) {
                     panelRef.current.rotation.x += 0.1;
                 }
