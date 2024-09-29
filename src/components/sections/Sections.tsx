@@ -7,7 +7,7 @@ import st from './Section.module.scss'
 
 const Sections = () => {
     const {ref: middleRef, inView: middleIsInView} = useInView({
-        threshold: 0.6
+        threshold: 0.3
     })
     const {ref: bottomRef, inView: bottomIsInView} = useInView({
         threshold: 0.9
