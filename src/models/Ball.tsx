@@ -85,7 +85,7 @@ const Ball = () => {
             scale={ballConfig.scale}
         >
             <sphereGeometry args={[1, 60, 1]} />
-            <meshMatcapMaterial color="#ffffff" transparent />
+            <meshMatcapMaterial color="#D3EE98" transparent />
         </mesh>
         </>
     )

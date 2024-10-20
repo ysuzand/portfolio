@@ -3,6 +3,7 @@ import { ScrollControls, Scroll } from '@react-three/drei';
 import { Suspense, lazy } from 'react';
 import Loader from '@/components/Loader'
 import Ball from '@/models/Ball';
+import Box from '@/models/Box';
 import Sections from '@/components/sections/Sections';
 import st from './Home.module.scss'
 
@@ -12,7 +13,7 @@ const Home = () => {
     return (
         <section className={st.wrapper}>
             <Canvas
-                camera={{near: 0.1, far: 1000}}
+                camera={{near: 0.1, far: 800}}
                 className={st.canvas}
                 shadows
             >
@@ -27,7 +28,8 @@ const Home = () => {
                     <spotLight intensity={1} position={[10, 10, 0]}/>
 
                     <ScrollControls pages={3} damping={0.25}>
-                        <Panel />
+                        {/* <Panel /> */}
+                        <Box />
                         <Scroll>      
                             <Ball />
                         </Scroll>
